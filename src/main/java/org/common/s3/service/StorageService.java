@@ -1,15 +1,12 @@
 package org.common.s3.service;
 
 import io.awspring.cloud.s3.S3Resource;
-import org.apache.commons.fileupload.FileItem;
+import org.common.s3.StorageFile;
 import org.common.s3.properties.AwsS3BucketProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import io.awspring.cloud.s3.S3Template;
-
-import java.io.IOException;
-
 
 @EnableConfigurationProperties(AwsS3BucketProperties.class)
 public class StorageService {
@@ -24,14 +21,10 @@ public class StorageService {
         this.awsS3BucketProperties = awsS3BucketProperties;
     }
 
-    public void save(FileItem file) {
-        try {
+    public void save(StorageFile file) {
             var objectKey = file.getName();
             var bucketName = awsS3BucketProperties.getBucketName();
             s3Template.upload(bucketName, objectKey, file.getInputStream());
-        } catch (IOException e) {
-            logger.error("Failed to save file", e);
-        }
     }
 
     public S3Resource retrieve(String objectKey) {
